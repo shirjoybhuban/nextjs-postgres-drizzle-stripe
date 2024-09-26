@@ -3,7 +3,7 @@ export const Constants = {
     BASE_URL_API: "http://localhost:3000/api",
     Api: {
         blog: {
-            list: "/blogs/",
+            list: "/blogs",
         },
     },
 };
