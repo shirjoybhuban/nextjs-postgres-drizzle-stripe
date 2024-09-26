@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Loader2 } from 'lucide-react';
 import { useUser } from '@/lib/auth';
 import { updateAccount } from '@/app/(login)/actions';
+import { getActivityLogs } from '@/lib/db/queries';
 
 type ActionState = {
   error?: string;
