@@ -1,7 +1,21 @@
+import { sql } from 'drizzle-orm';
 import { stripe } from '../payments/stripe';
 import { db } from './drizzle';
-import { users, teams, teamMembers } from './schema';
+import { users, teams, teamMembers, blogs } from './schema';
 import { hashPassword } from '@/lib/auth/session';
+
+const blogData = [
+  {
+    title: "5 Best Website Builders For Novices: Latest Guide",
+    slug: "best-website-builders-for-novices",
+    image: "https://content.prolificcloud.com/6ww1y6ej/image/best-website-builder-for-novices.webp",
+  },
+  {
+    title: "Best Wedding Website Builder in 2024 for Your Big Day!",
+    slug: "best-wedding-website-builder",
+    image: "https://content.prolificcloud.com/6ww1y6ej/image/7-best-wedding-website-builders-1.webp",
+  },
+]
 
 async function createStripeProducts() {
   console.log('Creating Stripe products and prices...');
@@ -40,6 +54,12 @@ async function createStripeProducts() {
 }
 
 async function seed() {
+  
+  await db.execute(sql`TRUNCATE TABLE team_members RESTART IDENTITY CASCADE`);
+  await db.execute(sql`TRUNCATE TABLE users RESTART IDENTITY CASCADE`);
+  await db.execute(sql`TRUNCATE TABLE teams RESTART IDENTITY CASCADE`);
+  await db.execute(sql`TRUNCATE TABLE blogs RESTART IDENTITY CASCADE`);
+
   const email = 'test@test.com';
   const password = 'admin123';
   const passwordHash = await hashPassword(password);
@@ -70,7 +90,8 @@ async function seed() {
     role: 'owner',
   });
 
-  await createStripeProducts();
+  await db.insert(blogs).values(blogData);
+  //await createStripeProducts();
 }
 
 seed()

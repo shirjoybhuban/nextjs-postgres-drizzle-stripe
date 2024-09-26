@@ -68,6 +68,15 @@ export const invitations = pgTable('invitations', {
   status: varchar('status', { length: 20 }).notNull().default('pending'),
 });
 
+export const blogs = pgTable('blogs', {
+  id: serial('id').primaryKey(),
+  title: varchar('title', { length: 255 }).notNull(),
+  slug: varchar('slug', { length: 255 }).notNull(),
+  image: varchar('image', { length: 255 }).notNull(),
+  status: varchar('status', { length: 20 }).notNull().default('Published'),
+  createdAt: timestamp('invited_at').notNull().defaultNow(),
+});
+
 export const teamsRelations = relations(teams, ({ many }) => ({
   teamMembers: many(teamMembers),
   activityLogs: many(activityLogs),
