@@ -8,8 +8,9 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit')) || 1;   
     const offset = (page - 1) * limit;
     const search = searchParams.get('search') || '';
+    const status = searchParams.get('status') || '';
     // Fetch paginated data from Drizzle
-    const paginatedUsers = await getBlogs(limit, offset, search);
+    const paginatedUsers = await getBlogs(limit, offset, search, status);
     const totalCount = 2;
     return Response.json({ data: paginatedUsers, totalCount })
   } catch (error) {

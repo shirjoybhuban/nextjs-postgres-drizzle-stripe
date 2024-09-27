@@ -1,11 +1,13 @@
 'use client';
 
 import BlogTable from '@/components/blog/BlogTable';
+import TableFilterDropdown from '@/components/table/TableFilterDropdown';
+import { Input } from '@/components/ui/input';
 import { useDebounce } from '@/hook/useDebounce';
 import { useBlogList } from '@/lib/blog';
 import { Blog } from '@/lib/blog/colums';
 import { ColumnDef } from '@tanstack/react-table';
-import { Copy, Pencil, Trash2 } from 'lucide-react';
+import { Copy, Pencil, Search, Trash2 } from 'lucide-react';
 //import { blogColumns } from '@/lib/blog/colums';
 import { useState } from 'react';
 
@@ -14,8 +16,15 @@ export default function BlogPostPage() {
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(1);
   const [searchParam, setSearchParam] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState('');
   const debouncedSearchParam = useDebounce(searchParam, 1000);
-  const { blogs, isLoading, isError, mutate } = useBlogList(pageIndex,pageSize,debouncedSearchParam);
+  const { blogs, isLoading, isError, mutate } = useBlogList(pageIndex,pageSize,debouncedSearchParam,selectedStatus);
+
+  const statusOptions = [
+    { id: 1, value: "", label: "All" },
+    { id: 2, value: "Published", label: "Publish" },
+    { id: 3, value: "Inactive", label: "Inactive" },
+  ];
 
   const blogColumns: ColumnDef<Blog>[] = [
     {
@@ -58,13 +67,22 @@ export default function BlogPostPage() {
       <h1 className="text-lg lg:text-2xl font-medium text-gray-900 mb-6">
         Blog Post
       </h1>
-      <input
-        type="text"
-        placeholder="Search..."
-        value={searchParam}
-        onChange={(e) => setSearchParam(e.target.value)}
-        className="border p-2 w-full"
-      />
+      <div className="flex gap-2">
+        <div className="relative w-1/4 max-w-sm mb-5 bg-white">
+          <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <Search className="w-4 h-4 text-gray-400" />
+          </span>
+          <Input
+            type="text"
+            placeholder="Search..."
+            className="pl-10"
+            value={searchParam}
+            onChange={(e) => setSearchParam(e.target.value)}
+          />
+        </div>
+        <TableFilterDropdown filterOptions={statusOptions} selectedStatus={selectedStatus} setSelectedStatus={setSelectedStatus} />
+      </div>
+
       {
         !isLoading ? <BlogTable columns={blogColumns} data={blogs?.data} pageSize={pageSize} pageIndex={pageIndex} setPageIndex={setPageIndex} setPageSize={setPageSize}/> : <h1>Loading</h1>
       }

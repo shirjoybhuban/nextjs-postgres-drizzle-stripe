@@ -130,7 +130,7 @@ export async function getTeamForUser(userId: number) {
 
 //Get blogs
 
-export async function getBlogs(limit:number = 10, offset:number = 10, search:string = '') {
+export async function getBlogs(limit:number = 10, offset:number = 10, search:string = '', status:string = '') {
   const user = await getUser();
   if (!user) {
     throw new Error('User not authenticated');
@@ -141,6 +141,8 @@ export async function getBlogs(limit:number = 10, offset:number = 10, search:str
 
   if (search && search != "") {
     data.where(like(blogs.title, `%${search}%`));
+  }else if(status && status != ""){
+    data.where(eq(blogs.status, status));
   }
 
   return await data;
