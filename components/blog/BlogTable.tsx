@@ -16,7 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Blog } from "@/lib/blog/colums"
+import { TablePagination } from "../table/TablePagination";
  
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[],
@@ -26,32 +26,6 @@ interface DataTableProps<TData, TValue> {
   setPageIndex : (value: number) => void,
   setPageSize : (value: number) => void,
 }
-
-const blogColumns: ColumnDef<Blog>[] = [
-  {
-      accessorKey: "id",
-      header: "ID",
-  },
-  {
-      accessorKey: "title",
-      header: "Title",
-  },
-  {
-      accessorKey: "slug",
-      header: "Slug",
-  },
-  {
-      accessorKey: "image",
-      header: "Image",
-  },
-  {
-      accessorKey: "status",
-      header: "Status",
-      cell: ({ row }) => {
-          return <div className="text-right font-medium">{row.getValue("status")}</div>
-        },
-  },
-]
 
 export default function BlogTable<TData, TValue>({
   columns,
@@ -72,6 +46,7 @@ export default function BlogTable<TData, TValue>({
         pageSize,
       },
     },
+
     manualPagination: true, // This tells React Table that pagination is handled on the server
     onPaginationChange: (updater) => {
       const newState = typeof updater === 'function' ? updater({ pageIndex, pageSize }) : updater;
@@ -84,7 +59,7 @@ export default function BlogTable<TData, TValue>({
 
   return (
     <>
-      <div className="rounded-md border">
+      <div className="rounded-md border bg-white">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -128,56 +103,7 @@ export default function BlogTable<TData, TValue>({
         </TableBody>
       </Table>
     </div>
-    <div className="flex items-center justify-between mt-4">
-        <div>
-          <button
-            onClick={() => table.setPageIndex(0)}
-            disabled={!table.getCanPreviousPage()}
-          >
-            {'<<'}
-          </button>
-          <button
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            {'<'}
-          </button>
-          <span>
-            Page{' '}
-            <strong>
-              {table.getState().pagination.pageIndex+1} of {table.getPageCount()}
-            </strong>{' '}
-          </span>
-          <button
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            {'>'}
-          </button>
-          <button
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-            disabled={!table.getCanNextPage()}
-          >
-            {'>>'}
-          </button>
-        </div>
-        <span>
-          Rows per page:{' '}
-          <select
-            value={pageSize}
-            onChange={(e) => {
-              setPageSize(Number(e.target.value));
-              table.setPageSize(Number(e.target.value));
-            }}
-          >
-            {[1, 2, 5, 10, 20, 30, 50].map((size) => (
-              <option key={size} value={size}>
-                {size}
-              </option>
-            ))}
-          </select>
-        </span>
-      </div>
+    <TablePagination table={table}/>
     </>
   );
 }
