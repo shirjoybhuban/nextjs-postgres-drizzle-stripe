@@ -1,4 +1,4 @@
-import { desc, and, eq, isNull } from 'drizzle-orm';
+import { desc, and, eq, isNull, like } from 'drizzle-orm';
 import { db } from './drizzle';
 import { activityLogs, blogs, teamMembers, teams, users } from './schema';
 import { cookies } from 'next/headers';
@@ -130,14 +130,18 @@ export async function getTeamForUser(userId: number) {
 
 //Get blogs
 
-export async function getBlogs(limit = 10, offset = 10) {
+export async function getBlogs(limit:number = 10, offset:number = 10, search:string = '') {
   const user = await getUser();
   if (!user) {
     throw new Error('User not authenticated');
   }
-  return await db
-    .select()
-    .from(blogs)
-    .orderBy(desc(blogs.createdAt))
-    .limit(limit).offset(offset);
+
+  const data = db.select().from(blogs).orderBy(desc(blogs.createdAt))
+  .limit(limit).offset(offset);
+
+  if (search && search != "") {
+    data.where(like(blogs.title, `%${search}%`));
+  }
+
+  return await data;
 }

@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table"
 
-type Blog = {
+export type Blog = {
     id: string,
     title: string,
     slug: string,
@@ -28,5 +28,8 @@ export const blogColumns: ColumnDef<Blog>[] = [
     {
         accessorKey: "status",
         header: "Status",
+        cell: ({ row }) => {
+            return "sss"
+          },
     },
 ]

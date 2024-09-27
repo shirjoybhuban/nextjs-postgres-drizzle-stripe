@@ -4,8 +4,8 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  useReactTable,
   getPaginationRowModel,
+  useReactTable,
 } from "@tanstack/react-table"
  
 import {
@@ -16,8 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Button } from "../ui/button"
-import { useState } from "react"
+import { Blog } from "@/lib/blog/colums"
  
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[],
@@ -27,6 +26,32 @@ interface DataTableProps<TData, TValue> {
   setPageIndex : (value: number) => void,
   setPageSize : (value: number) => void,
 }
+
+const blogColumns: ColumnDef<Blog>[] = [
+  {
+      accessorKey: "id",
+      header: "ID",
+  },
+  {
+      accessorKey: "title",
+      header: "Title",
+  },
+  {
+      accessorKey: "slug",
+      header: "Slug",
+  },
+  {
+      accessorKey: "image",
+      header: "Image",
+  },
+  {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => {
+          return <div className="text-right font-medium">{row.getValue("status")}</div>
+        },
+  },
+]
 
 export default function BlogTable<TData, TValue>({
   columns,
@@ -58,7 +83,7 @@ export default function BlogTable<TData, TValue>({
   })
 
   return (
-    <section className="flex-1 p-4 lg:p-8">
+    <>
       <div className="rounded-md border">
       <Table>
         <TableHeader>
@@ -153,6 +178,6 @@ export default function BlogTable<TData, TValue>({
           </select>
         </span>
       </div>
-    </section>
+    </>
   );
 }
