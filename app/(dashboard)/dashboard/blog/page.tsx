@@ -2,12 +2,13 @@
 
 import BlogTable from '@/components/blog/BlogTable';
 import TableFilterDropdown from '@/components/table/TableFilterDropdown';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useDebounce } from '@/hook/useDebounce';
 import { useBlogList } from '@/lib/blog';
 import { Blog } from '@/lib/blog/colums';
 import { ColumnDef } from '@tanstack/react-table';
-import { Copy, Pencil, Search, Trash2 } from 'lucide-react';
+import { Copy, Pencil, Plus, Search, Trash2 } from 'lucide-react';
 //import { blogColumns } from '@/lib/blog/colums';
 import { useState } from 'react';
 
@@ -57,16 +58,25 @@ export default function BlogPostPage() {
       accessorKey: "action",
       header: "",
       cell: ({ row }) => {
-          return <div className="flex gap-1"><Pencil className='cursor-pointer h-4 hover:text-green-500'/><Copy className='cursor-pointer h-4 hover:text-green-500'/><Trash2 className='cursor-pointer h-4 hover:text-green-500'/></div>
+          return <div className="flex gap-1"><Pencil className='cursor-pointer h-4 hover:text-orange-600'/><Copy className='cursor-pointer h-4 hover:text-orange-600'/><Trash2 className='cursor-pointer h-4 hover:text-orange-600'/></div>
         },
     },
 ]
 
   return (
     <section className="flex-1 p-4 lg:p-8">
-      <h1 className="text-lg lg:text-2xl font-medium text-gray-900 mb-6">
-        Blog Post
-      </h1>
+      <div className='flex justify-between items-center'>
+        <div>
+          <h1 className="text-lg lg:text-2xl font-medium text-gray-900 mb-1">
+            Blog Post
+          </h1>
+          {blogs?.totalCount > 0 && <p className="text-xs lg:text-sm font-medium text-gray-900 mb-6">{blogs?.totalCount} entries found</p>}
+        </div>
+        <Button className="bg-orange-500 hover:bg-orange-600 text-white flex items-center gap-1">
+          <Plus className="w-4 h-4" />
+          Create new entry
+        </Button>
+      </div>
       <div className="flex gap-2">
         <div className="relative w-1/4 max-w-sm mb-5 bg-white">
           <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -82,10 +92,7 @@ export default function BlogPostPage() {
         </div>
         <TableFilterDropdown filterOptions={statusOptions} selectedStatus={selectedStatus} setSelectedStatus={setSelectedStatus} />
       </div>
-
-      {
-        !isLoading ? <BlogTable columns={blogColumns} data={blogs?.data} pageSize={pageSize} pageIndex={pageIndex} setPageIndex={setPageIndex} setPageSize={setPageSize}/> : <h1>Loading</h1>
-      }
+      <BlogTable columns={blogColumns} data={blogs?.data} isLoading={isLoading} pageSize={pageSize} pageIndex={pageIndex} setPageIndex={setPageIndex} setPageSize={setPageSize}/>
     </section>
   );
 }

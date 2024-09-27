@@ -21,6 +21,7 @@ import { TablePagination } from "../table/TablePagination";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[],
   data: TData[],
+  isLoading:boolean,
   pageIndex: number,
   pageSize: number,
   setPageIndex : (value: number) => void,
@@ -30,6 +31,7 @@ interface DataTableProps<TData, TValue> {
 export default function BlogTable<TData, TValue>({
   columns,
   data,
+  isLoading,
   pageIndex,
   pageSize,
   setPageIndex,
@@ -79,7 +81,8 @@ export default function BlogTable<TData, TValue>({
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody>
+        {
+          !isLoading ? <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
@@ -100,7 +103,15 @@ export default function BlogTable<TData, TValue>({
               </TableCell>
             </TableRow>
           )}
+        </TableBody> : 
+        <TableBody>
+          <TableRow>
+            <TableCell colSpan={columns.length} className="h-24 text-center">
+              Loading...
+            </TableCell>
+          </TableRow>
         </TableBody>
+        }
       </Table>
     </div>
     <TablePagination table={table}/>
