@@ -76,9 +76,13 @@ export default function BlogPostPage() {
       cell: ({ row }) => {
         return (
           <div className="flex gap-1">
-            <Pencil className="cursor-pointer h-4 hover:text-orange-600" />
+            {
+              hasPermission("blog", "edit") && <Pencil className="cursor-pointer h-4 hover:text-orange-600" />
+            }
             <Copy className="cursor-pointer h-4 hover:text-orange-600" />
-            <Trash2 className="cursor-pointer h-4 hover:text-orange-600" />
+            {
+              hasPermission("blog", "delete") && <Trash2 className="cursor-pointer h-4 hover:text-orange-600" />
+            }
           </div>
         )
       },
