@@ -1,33 +1,33 @@
-'use client';
+"use client"
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Lock, Trash2, Loader2 } from 'lucide-react';
-import { startTransition, useActionState } from 'react';
-import { updatePassword, deleteAccount } from '@/app/(login)/actions';
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Label } from "@/components/ui/label"
+import { Lock, Trash2, Loader2 } from "lucide-react"
+import { startTransition, useActionState } from "react"
+import { updatePassword, deleteAccount } from "@/app/(login)/actions"
 
 type ActionState = {
-  error?: string;
-  success?: string;
-};
+  error?: string
+  success?: string
+}
 
 export default function SecurityPage() {
   const [passwordState, passwordAction, isPasswordPending] = useActionState<
     ActionState,
     FormData
-  >(updatePassword, { error: '', success: '' });
+  >(updatePassword, { error: "", success: "" })
 
   const [deleteState, deleteAction, isDeletePending] = useActionState<
     ActionState,
     FormData
-  >(deleteAccount, { error: '', success: '' });
+  >(deleteAccount, { error: "", success: "" })
 
   const handlePasswordSubmit = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
-    event.preventDefault();
+    event.preventDefault()
     // If you call the Server Action directly, it will automatically
     // reset the form. We don't want that here, because we want to keep the
     // client-side values in the inputs. So instead, we use an event handler
@@ -36,18 +36,18 @@ export default function SecurityPage() {
     // Another option here is to persist the values to local storage. I might
     // explore alternative options.
     startTransition(() => {
-      passwordAction(new FormData(event.currentTarget));
-    });
-  };
+      passwordAction(new FormData(event.currentTarget))
+    })
+  }
 
   const handleDeleteSubmit = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
-    event.preventDefault();
+    event.preventDefault()
     startTransition(() => {
-      deleteAction(new FormData(event.currentTarget));
-    });
-  };
+      deleteAction(new FormData(event.currentTarget))
+    })
+  }
 
   return (
     <section className="flex-1 p-4 lg:p-8">
@@ -167,5 +167,5 @@ export default function SecurityPage() {
         </CardContent>
       </Card>
     </section>
-  );
+  )
 }
