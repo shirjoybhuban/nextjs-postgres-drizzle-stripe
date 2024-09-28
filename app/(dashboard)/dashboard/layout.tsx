@@ -5,6 +5,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Users, Settings, Shield, Activity, Menu } from 'lucide-react';
+import { PermissionsProvider } from '@/lib/permission';
+import { useUser } from '@/lib/auth';
+import { permissions } from '../../../lib/db/schema';
 
 export default function DashboardLayout({
   children,
@@ -12,6 +15,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const { user } = useUser();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const navItems = [
@@ -67,7 +71,10 @@ export default function DashboardLayout({
         </aside>
 
         {/* Main content */}
-        <main className="flex-1 overflow-y-auto p-0 lg:p-4">{children}</main>
+        <PermissionsProvider permissions={user.permissions}>
+          <main className="flex-1 overflow-y-auto p-0 lg:p-4">{children}</main>
+        </PermissionsProvider>
+        
       </div>
     </div>
   );

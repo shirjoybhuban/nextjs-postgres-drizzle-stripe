@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { useDebounce } from '@/hook/useDebounce';
 import { useBlogList } from '@/lib/blog';
 import { Blog } from '@/lib/blog/colums';
+import { usePermissions } from '@/lib/permission';
 import { ColumnDef } from '@tanstack/react-table';
 import { Copy, Pencil, Plus, Search, Trash2 } from 'lucide-react';
 //import { blogColumns } from '@/lib/blog/colums';
@@ -19,6 +20,7 @@ export default function BlogPostPage() {
   const [searchParam, setSearchParam] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
   const debouncedSearchParam = useDebounce(searchParam, 1000);
+  const { hasPermission } = usePermissions();
   const { blogs, isLoading, isError, mutate } = useBlogList(pageIndex,pageSize,debouncedSearchParam,selectedStatus);
 
   const statusOptions = [
@@ -72,10 +74,12 @@ export default function BlogPostPage() {
           </h1>
           {blogs?.totalCount > 0 && <p className="text-xs lg:text-sm font-medium text-gray-900 mb-6">{blogs?.totalCount} entries found</p>}
         </div>
-        <Button className="bg-orange-500 hover:bg-orange-600 text-white flex items-center gap-1">
-          <Plus className="w-4 h-4" />
-          Create new entry
-        </Button>
+        {hasPermission("blog","create") && (
+          <Button className="bg-orange-500 hover:bg-orange-600 text-white flex items-center gap-1">
+            <Plus className="w-4 h-4" />
+            Create new entry
+          </Button>
+        )}
       </div>
       <div className="flex gap-2">
         <div className="relative w-1/4 max-w-sm mb-5 bg-white">

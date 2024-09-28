@@ -11,7 +11,7 @@ import { use } from 'react';
 import { User } from '@/lib/db/schema';
 
 type UserContextType = {
-  user: User | null;
+  user: any | null;
   setUser: (user: User | null) => void;
 };
 
