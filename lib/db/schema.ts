@@ -14,6 +14,9 @@ export const users = pgTable('users', {
   email: varchar('email', { length: 255 }).notNull().unique(),
   passwordHash: text('password_hash').notNull(),
   role: varchar('role', { length: 20 }).notNull().default('member'),
+  roleId: integer('role_id')
+  .notNull()
+  .references(() => roles.id),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
   deletedAt: timestamp('deleted_at'),
@@ -77,13 +80,43 @@ export const blogs = pgTable('blogs', {
   createdAt: timestamp('invited_at').notNull().defaultNow(),
 });
 
+export const roles = pgTable('roles', {
+  id: serial('id').primaryKey(),
+  name: varchar('title', { length: 255 }).notNull(),
+  slug: varchar('slug', { length: 255 }).notNull(),
+  description: varchar('image', { length: 255 }).notNull(),
+  createdAt: timestamp('invited_at').notNull().defaultNow(),
+});
+
+export const permissions = pgTable("permissions", {
+  id: serial("id").primaryKey(),
+  permissionName: text("permission_name").notNull().unique(),
+});
+
+export const rolePermissions = pgTable("role_permissions", {
+  roleId: integer("role_id").notNull().references(() => roles.id),
+  permissionId: integer("permission_id").notNull().references(() => permissions.id),
+});
+
+// export const roleRelations = relations(roles, ({ many }) => ({
+//   permissions: many(rolePermissions),
+// }));
+
+// export const permissionRelations = relations(permissions, ({ many }) => ({
+//   roles: many(rolePermissions),
+// }));
+
 export const teamsRelations = relations(teams, ({ many }) => ({
   teamMembers: many(teamMembers),
   activityLogs: many(activityLogs),
   invitations: many(invitations),
 }));
 
-export const usersRelations = relations(users, ({ many }) => ({
+export const usersRelations = relations(users, ({ many, one }) => ({
+  role: one(roles, {
+    fields: [users.roleId],
+    references: [roles.id],
+  }),
   teamMembers: many(teamMembers),
   invitationsSent: many(invitations),
 }));
@@ -122,6 +155,7 @@ export const activityLogsRelations = relations(activityLogs, ({ one }) => ({
 }));
 
 export type User = typeof users.$inferSelect;
+export type Role = typeof roles.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type Team = typeof teams.$inferSelect;
 export type NewTeam = typeof teams.$inferInsert;

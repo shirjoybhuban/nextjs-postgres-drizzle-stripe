@@ -30,10 +30,10 @@ export function UserProvider({
   userPromise,
 }: {
   children: ReactNode;
-  userPromise: Promise<User | null>;
+  userPromise: Promise<any | null>;
 }) {
   let initialUser = use(userPromise);
-  let [user, setUser] = useState<User | null>(initialUser);
+  let [user, setUser] = useState<any | null>(initialUser);
 
   useEffect(() => {
     setUser(initialUser);

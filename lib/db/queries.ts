@@ -1,6 +1,6 @@
-import { desc, and, eq, isNull, like } from 'drizzle-orm';
+import { desc, and, eq, isNull, like, sql } from 'drizzle-orm';
 import { db } from './drizzle';
-import { activityLogs, blogs, teamMembers, teams, users } from './schema';
+import { activityLogs, blogs, permissions, rolePermissions, roles, teamMembers, teams, users } from './schema';
 import { cookies } from 'next/headers';
 import { verifyToken } from '@/lib/auth/session';
 
@@ -23,11 +23,27 @@ export async function getUser() {
     return null;
   }
 
-  const user = await db
-    .select()
+  // const user = await db
+  //   .select()
+  //   .from(users)
+  //   .where(and(eq(users.id, sessionData.user.id), isNull(users.deletedAt)))
+  //   .limit(1);
+
+    const user = await db
+    .select({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      roleId: roles.id,
+      role: roles.name,
+      permissions: sql`array_agg(permissions.permission_name)`.as("permissions"),
+    })
     .from(users)
+    .leftJoin(roles, eq(roles.id, users.roleId))
+    .leftJoin(rolePermissions, eq(roles.id, rolePermissions.roleId))
+    .leftJoin(permissions, eq(permissions.id, rolePermissions.permissionId))
     .where(and(eq(users.id, sessionData.user.id), isNull(users.deletedAt)))
-    .limit(1);
+    .groupBy(users.id, roles.id);
 
   if (user.length === 0) {
     return null;
