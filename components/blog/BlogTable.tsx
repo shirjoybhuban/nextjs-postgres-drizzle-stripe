@@ -42,14 +42,13 @@ export default function BlogTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
-    pageCount: total,
+    pageCount: total/pageSize,
     state: {
       pagination: {
         pageIndex,
         pageSize,
       },
     },
-
     manualPagination: true, // This tells React Table that pagination is handled on the server
     onPaginationChange: (updater) => {
       const newState =
@@ -62,7 +61,6 @@ export default function BlogTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   })
-
   return (
     <>
       <div className="rounded-md border bg-white">

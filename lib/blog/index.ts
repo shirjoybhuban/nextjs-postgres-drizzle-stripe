@@ -10,7 +10,12 @@ export function useBlogList(
 ) {
   const { data, error, isLoading, mutate } = useSWR(
     `${Constants.Api.blog.list}/?search=${searchParam}&status=${selectedStatus}&page=${pageIndex + 1}&limit=${pageSize}`,
-    axiosFetcher
+    axiosFetcher,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: true,
+    }
   )
 
   return {

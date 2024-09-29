@@ -32,12 +32,6 @@ export async function getUser() {
     return null
   }
 
-  // const user = await db
-  //   .select()
-  //   .from(users)
-  //   .where(and(eq(users.id, sessionData.user.id), isNull(users.deletedAt)))
-  //   .limit(1);
-
   const user = await db
     .select({
       id: users.id,
@@ -184,20 +178,65 @@ export async function getBlogs(
   return await data
 }
 
-//Get blogs
-
+//Get all blogs count
 export async function getTotalBlogs() {
   const user = await getUser()
   if (!user) {
     throw new Error("User not authenticated")
   }
-
   const data = db
     .select({
       totalRows: sql<number>`COUNT(*)`,
     })
     .from(blogs)
-
-  // Extract the count value from the result
   return data
+}
+
+export async function isAuthenticate() {
+  const sessionCookie = cookies().get("session")
+  if (!sessionCookie || !sessionCookie.value) {
+    return { checked: false, useId: null }
+  }
+
+  const sessionData = await verifyToken(sessionCookie.value)
+  if (
+    !sessionData ||
+    !sessionData.user ||
+    typeof sessionData.user.id !== "number"
+  ) {
+    return { checked: false, useId: null }
+  }
+
+  if (new Date(sessionData.expires) < new Date()) {
+    return { checked: false, useId: null }
+  }
+
+  return { checked: true, userId: sessionData.user.id }
+}
+
+export async function isAuthorized(
+  userId: number,
+  module: string,
+  action: string
+) {
+  const permission = module + "_" + action
+
+  const user = await db
+    .select({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      roleId: roles.id,
+      role: roles.name,
+    })
+    .from(users)
+    .leftJoin(roles, eq(roles.id, users.roleId))
+    .leftJoin(rolePermissions, eq(roles.id, rolePermissions.roleId))
+    .leftJoin(permissions, eq(permissions.id, rolePermissions.permissionId))
+    .where(
+      and(eq(users.id, userId), eq(permissions.permissionName, permission))
+    )
+    .groupBy(users.id, roles.id)
+
+  return user?.length > 0 ? true : false
 }

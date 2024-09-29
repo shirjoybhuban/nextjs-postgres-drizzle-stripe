@@ -14,7 +14,7 @@ import { useState } from "react"
 
 export default function BlogPostPage() {
   const [pageIndex, setPageIndex] = useState(0)
-  const [pageSize, setPageSize] = useState(1)
+  const [pageSize, setPageSize] = useState(2)
   const [searchParam, setSearchParam] = useState("")
   const [selectedStatus, setSelectedStatus] = useState("")
   const debouncedSearchParam = useDebounce(searchParam, 1000)
@@ -138,7 +138,7 @@ export default function BlogPostPage() {
       </div>
       <BlogTable
         columns={blogColumns}
-        data={blogs?.data}
+        data={blogs?.data || []}
         total={blogs?.totalCount || 0}
         isLoading={isLoading}
         pageSize={pageSize}
