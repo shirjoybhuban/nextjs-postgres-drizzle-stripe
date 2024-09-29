@@ -1,20 +1,20 @@
 "use client"
 
 import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  useReactTable,
+    ColumnDef,
+    flexRender,
+    getCoreRowModel,
+    getPaginationRowModel,
+    useReactTable,
 } from "@tanstack/react-table"
 
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@/components/ui/table"
 import { TablePagination } from "../table/TablePagination"
 
@@ -42,7 +42,7 @@ export default function BlogTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
-    pageCount: total/pageSize,
+    pageCount: total / pageSize,
     state: {
       pagination: {
         pageIndex,
