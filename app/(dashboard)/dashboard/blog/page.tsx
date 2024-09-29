@@ -10,7 +10,6 @@ import { Blog } from "@/lib/blog/colums"
 import { usePermissions } from "@/lib/permission"
 import { ColumnDef } from "@tanstack/react-table"
 import { Copy, Pencil, Plus, Search, Trash2 } from "lucide-react"
-//import { blogColumns } from '@/lib/blog/colums';
 import { useState } from "react"
 
 export default function BlogPostPage() {
@@ -76,13 +75,13 @@ export default function BlogPostPage() {
       cell: ({ row }) => {
         return (
           <div className="flex gap-1">
-            {
-              hasPermission("blog", "edit") && <Pencil className="cursor-pointer h-4 hover:text-orange-600" />
-            }
+            {hasPermission("blog", "edit") && (
+              <Pencil className="cursor-pointer h-4 hover:text-orange-600" />
+            )}
             <Copy className="cursor-pointer h-4 hover:text-orange-600" />
-            {
-              hasPermission("blog", "delete") && <Trash2 className="cursor-pointer h-4 hover:text-orange-600" />
-            }
+            {hasPermission("blog", "delete") && (
+              <Trash2 className="cursor-pointer h-4 hover:text-orange-600" />
+            )}
           </div>
         )
       },
@@ -131,6 +130,7 @@ export default function BlogPostPage() {
       <BlogTable
         columns={blogColumns}
         data={blogs?.data}
+        total={blogs?.totalCount || 0}
         isLoading={isLoading}
         pageSize={pageSize}
         pageIndex={pageIndex}

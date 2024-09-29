@@ -21,6 +21,7 @@ import { TablePagination } from "../table/TablePagination"
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  total: number
   isLoading: boolean
   pageIndex: number
   pageSize: number
@@ -31,6 +32,7 @@ interface DataTableProps<TData, TValue> {
 export default function BlogTable<TData, TValue>({
   columns,
   data,
+  total,
   isLoading,
   pageIndex,
   pageSize,
@@ -40,7 +42,7 @@ export default function BlogTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
-    pageCount: 2,
+    pageCount: total,
     state: {
       pagination: {
         pageIndex,

@@ -1,4 +1,4 @@
-import { getBlogs } from "@/lib/db/queries"
+import { getBlogs, getTotalBlogs } from "@/lib/db/queries"
 import { type NextRequest } from "next/server"
 
 export async function GET(request: NextRequest) {
@@ -11,7 +11,9 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get("status") || ""
     // Fetch paginated data from Drizzle
     const paginatedUsers = await getBlogs(limit, offset, search, status)
-    const totalCount = 2
+    const result: any = await getTotalBlogs()
+    const totalCount = parseInt(result[0]?.totalRows || 0)
+
     return Response.json({ data: paginatedUsers, totalCount })
   } catch (error) {
     console.error(error)

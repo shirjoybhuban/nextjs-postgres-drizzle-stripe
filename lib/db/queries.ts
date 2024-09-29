@@ -183,3 +183,21 @@ export async function getBlogs(
 
   return await data
 }
+
+//Get blogs
+
+export async function getTotalBlogs() {
+  const user = await getUser()
+  if (!user) {
+    throw new Error("User not authenticated")
+  }
+
+  const data = db
+    .select({
+      totalRows: sql<number>`COUNT(*)`,
+    })
+    .from(blogs)
+
+  // Extract the count value from the result
+  return data
+}
