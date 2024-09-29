@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
       .where(eq(users.id, Number(userId)))
       .limit(1)
 
-    if (user.length === 0) {
+    if (user?.length === 0) {
       throw new Error("User not found in database.")
     }
 

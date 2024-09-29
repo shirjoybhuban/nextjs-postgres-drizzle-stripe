@@ -90,3 +90,20 @@ export const rolePermissionData = [
     permissionId: 1,
   },
 ]
+export const teamMemberData = [
+  {
+    teamId: 1,
+    userId: 1,
+    role: "owner",
+  },
+  {
+    teamId: 1,
+    userId: 2,
+    role: "author",
+  },
+  {
+    teamId: 1,
+    userId: 3,
+    role: "member",
+  },
+]

@@ -3,6 +3,7 @@ import {
   permissionData,
   roleData,
   rolePermissionData,
+  teamMemberData,
 } from "@/const/seedData"
 import { hashPassword } from "@/lib/auth/session"
 import { sql } from "drizzle-orm"
@@ -13,8 +14,9 @@ import {
   permissions,
   rolePermissions,
   roles,
+  teamMembers,
   teams,
-  users
+  users,
 } from "./schema"
 
 async function createStripeProducts() {
@@ -104,13 +106,10 @@ async function seed() {
     })
     .returning()
   console.log("Added team.")
+  await db.insert(teamMembers).values(teamMemberData)
+  console.log("Added team member.")
   await db.insert(blogs).values(blogData)
   console.log("Added 4 blogs.")
-  // await db.insert(teamMembers).values({
-  //   teamId: team.id,
-  //   userId: user.id,
-  //   role: "owner",
-  // })
   //await createStripeProducts();
 }
 

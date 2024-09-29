@@ -14,6 +14,7 @@ import { cookies } from "next/headers"
 import { verifyToken } from "@/lib/auth/session"
 
 export async function getUser() {
+
   const sessionCookie = cookies().get("session")
   if (!sessionCookie || !sessionCookie.value) {
     return null
@@ -23,7 +24,7 @@ export async function getUser() {
   if (
     !sessionData ||
     !sessionData.user ||
-    typeof sessionData.user.id !== "number"
+    typeof sessionData.user?.id !== "number"
   ) {
     return null
   }
@@ -47,13 +48,12 @@ export async function getUser() {
     .leftJoin(roles, eq(roles.id, users.roleId))
     .leftJoin(rolePermissions, eq(roles.id, rolePermissions.roleId))
     .leftJoin(permissions, eq(permissions.id, rolePermissions.permissionId))
-    .where(and(eq(users.id, sessionData.user.id), isNull(users.deletedAt)))
+    .where(and(eq(users.id, sessionData.user?.id), isNull(users.deletedAt)))
     .groupBy(users.id, roles.id)
 
-  if (user.length === 0) {
+  if (user?.length === 0) {
     return null
   }
-
   return user[0]
 }
 
@@ -115,7 +115,7 @@ export async function getActivityLogs() {
     })
     .from(activityLogs)
     .leftJoin(users, eq(activityLogs.userId, users.id))
-    .where(eq(activityLogs.userId, user.id))
+    .where(eq(activityLogs.userId, user?.id))
     .orderBy(desc(activityLogs.timestamp))
     .limit(10)
 }
@@ -202,7 +202,7 @@ export async function isAuthenticate() {
   if (
     !sessionData ||
     !sessionData.user ||
-    typeof sessionData.user.id !== "number"
+    typeof sessionData.user?.id !== "number"
   ) {
     return { checked: false, useId: null }
   }
@@ -211,7 +211,7 @@ export async function isAuthenticate() {
     return { checked: false, useId: null }
   }
 
-  return { checked: true, userId: sessionData.user.id }
+  return { checked: true, userId: sessionData.user?.id }
 }
 
 export async function isAuthorized(
