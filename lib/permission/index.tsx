@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode } from "react"
+import { createContext, ReactNode, useContext, useMemo } from "react"
 
 // Define the shape of the context
 type PermissionsContextType = {
@@ -25,9 +25,16 @@ export const PermissionsProvider = ({
   children: ReactNode
   permissions: string[]
 }) => {
-  const hasPermission = (module: string, action: string) =>
-    permissions.includes(module + "_" + action)
+  // const hasPermission = (module: string, action: string) =>
+  //   permissions.includes(module + "_" + action)
 
+  function hasPermission(module: string, action: string) {
+    let checkPermission = useMemo(
+      () => permissions.includes(module + "_" + action),
+      [module, action]
+    )
+    return checkPermission
+  }
   return (
     <PermissionsContext.Provider value={{ permissions, hasPermission }}>
       {children}

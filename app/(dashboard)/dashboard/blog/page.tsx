@@ -13,18 +13,18 @@ import { Copy, Pencil, Plus, Search, Trash2 } from "lucide-react"
 import { useState } from "react"
 
 export default function BlogPostPage() {
-  const [pageIndex, setPageIndex] = useState(0);
-  const [pageSize, setPageSize] = useState(1);
-  const [searchParam, setSearchParam] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("");
-  const debouncedSearchParam = useDebounce(searchParam, 1000);
-  const { hasPermission } = usePermissions();
+  const [pageIndex, setPageIndex] = useState(0)
+  const [pageSize, setPageSize] = useState(1)
+  const [searchParam, setSearchParam] = useState("")
+  const [selectedStatus, setSelectedStatus] = useState("")
+  const debouncedSearchParam = useDebounce(searchParam, 1000)
+  const { hasPermission } = usePermissions()
   const { blogs, isLoading, isError, mutate } = useBlogList(
     pageIndex,
     pageSize,
     debouncedSearchParam,
     selectedStatus
-  );
+  )
 
   const statusOptions = [
     { id: 1, value: "", label: "All" },
@@ -88,10 +88,12 @@ export default function BlogPostPage() {
     },
   ]
 
-  if(hasPermission("blog", "read")){
+  if (!hasPermission("blog", "read")) {
     return (
       <section className="flex justify-center items-center p-4 lg:p-8 bg-red-100 rounded-md">
-        <h1 className="font-semibold text-red-800">You don't have right permission.</h1>
+        <h1 className="font-semibold text-red-800">
+          You don't have right permission.
+        </h1>
       </section>
     )
   }
